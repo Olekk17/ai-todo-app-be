@@ -7,7 +7,13 @@ const main = () => {
   const app = express();
   const port = 5001;
   getDb();
-  app.use(cors());
+
+  
+  app.use(cors({
+    origin: process.env.REACT_APP_FRONTEND_URL,
+    credentials: true,
+  }));
+
   app.use(express.json());
   app.use(router);
 
