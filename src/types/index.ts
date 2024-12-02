@@ -6,11 +6,15 @@ export type SignUpRequest = {
 export type TodoToCreate = {
   userId?: number;
   title: string;
-  completed: boolean;
+  description?: string;
 }
 
 export type Todo = TodoToCreate & {
-  id: number
+  id: number;
+  status: 'created' | 'inProgress' | 'completed';
+  createdAt: Date;
+  inProgressAt?: Date;
+  completedAt?: Date;
 };
 
 export type DecodedToken = {

@@ -5,7 +5,7 @@ import { getDb } from './db/getDb';
 
 const main = () => {
   const app = express();
-  const port = 5000;
+  const port = 5001;
   getDb();
   app.use(cors());
   app.use(express.json());

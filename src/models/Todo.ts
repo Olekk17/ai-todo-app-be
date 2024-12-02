@@ -30,6 +30,12 @@ export class Todo extends Model {
   title!: string;
 
   @AllowNull(false)
+  @Column({
+    type: DataTypes.STRING,
+  })
+  description!: string;
+
+  @AllowNull(false)
   @ForeignKey(() => User)
   @Column({
     type: DataTypes.INTEGER,
@@ -38,7 +44,25 @@ export class Todo extends Model {
 
   @AllowNull(false)
   @Column({
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.STRING,
   })
-  completed!: boolean;
+  status!: string;
+
+  @AllowNull(true)
+  @Column({
+    type: DataTypes.DATE,
+  })
+  inProgressAt!: Date;
+
+  @AllowNull(true)
+  @Column({
+    type: DataTypes.DATE,
+  })
+  completedAt!: Date;
+
+  @AllowNull(false)
+  @Column({
+    type: DataTypes.FLOAT,
+  })
+  estimatedTime!: number;
 }

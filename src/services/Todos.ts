@@ -2,7 +2,7 @@ import { Todo } from "../models/Todo";
 import { Todo as TodoType} from "../types";
 
 const getTodosByUserId = (userId: number) => {
-  return Todo.findAll({ where: { userId } });
+  return Todo.findAll({ where: { userId }, order: [['id', 'ASC']] });
 };
 
 const deleteTodoById = (id: number) => {
