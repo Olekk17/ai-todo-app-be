@@ -15,6 +15,7 @@ export type Todo = TodoToCreate & {
   createdAt: Date;
   inProgressAt?: Date;
   completedAt?: Date;
+  estimatedTime?: number;
 };
 
 export type DecodedToken = {

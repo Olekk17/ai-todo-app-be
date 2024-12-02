@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import { SignUpRequest } from "../types";
 import { UserServices } from "../services/User";
 import jwt from "jsonwebtoken";
+import { TodoServices } from "../services/Todos";
+import OpenAI from "openai";
+import { baseAiContext } from "../сonstants";
 
 export const SignUp = async (
   req: Request<any, any, SignUpRequest>,
@@ -58,11 +61,68 @@ export const SignIn = async (
       { expiresIn: "1h" }
     );
 
-    console.log(jwtToken);
 
     res.send(jwtToken);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
+  }
+};
+
+export const analyzeLastNTasks = async (req: Request & any, res: Response) => {
+  const id = req.userId as number;
+  const n = req.query.n as string | undefined;
+  if (!n) {
+    return res.status(400).send("n is required");
+  }
+  const tasks = await TodoServices.getLastNTasks(+n, +id);
+  const tasksWithTimeSpent = tasks.map((task) => {
+    const copy = JSON.parse(JSON.stringify(task));
+    let timeSpent: number | undefined; // in hours
+
+    if (task.inProgressAt && task.completedAt) {
+      timeSpent =
+        (new Date(task.completedAt).getTime() -
+          new Date(task.inProgressAt).getTime()) /
+        1000 /
+        60 /
+        60;
+    }
+
+    if (timeSpent) {
+      copy.timeSpentInHours = timeSpent;
+    }
+
+    return copy;
+  });
+
+  try {
+    const openai = new OpenAI();
+
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: baseAiContext,
+        },
+        {
+          role: "user",
+          content: JSON.stringify(tasksWithTimeSpent),
+        },
+      ],
+      model: "gpt-3.5-turbo-1106",
+      response_format: { type: "text" },
+    });
+    if (completion.choices[0].message.content) {
+      return res.status(200).json(completion.choices[0].message.content);
+    }
+
+    return res
+      .status(500)
+      .json({ message: "Something went wrong getting response" });
+  } catch (error: any) {
+    return res.status(500).json({
+      error: error?.message || "Internal Server Error",
+    });
   }
 };

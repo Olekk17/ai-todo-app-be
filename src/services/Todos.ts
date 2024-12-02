@@ -25,6 +25,14 @@ const updateTodoById = (id: number, todo: Partial<Todo>) => {
   return Todo.update(todo, { where: { id } });
 }
 
+const getLastNTasks = (n: number, userId: number) => {
+  return Todo.findAll({
+    where: { userId },
+    order: [["createdAt", "DESC"]],
+    limit: n,
+  });
+};
+
 export const TodoServices = {
   getTodosByUserId,
   deleteTodoById,
@@ -32,4 +40,5 @@ export const TodoServices = {
   addTodo,
   getTodoById,
   updateTodoById,
+  getLastNTasks
 };
