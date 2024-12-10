@@ -63,10 +63,10 @@ export const patchTodo = async (req: Request & any, res: Response) => {
 };
 
 export const getTipForTodo = async (req: Request & any, res: Response) => {
-  const id = req.userId as number;
+  const id = req.params.id as number;
   const todo = await TodoServices.getTodoById(+id);
   if (!todo) {
-    return res.status(404).json({ message: "Todo not found" });
+    return res.status(404).json({ message: "Todo was not found" });
   }
   let timeTakenInHours: number | undefined;
   if (

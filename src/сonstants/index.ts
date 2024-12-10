@@ -12,5 +12,6 @@ export const baseAiContext = `
     estimatedTime?: number; // in hours
   }
   If the todo is completed, there will be additional field for completion time (in hours).
-  If user finished it for more than he thought it would take, provide a tip to help him estimate better or best practises for this type of tasks.
+  If user finished it for more than he thought it would take,
+  provide a tip to help him estimate better or best practises for this type of tasks.
 `;
